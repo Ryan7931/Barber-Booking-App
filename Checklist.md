@@ -1,40 +1,85 @@
+✦ Maison Cut — Barber Booking App
+Een fullstack barber booking applicatie gebouwd met React, Node.js, Express en MongoDB.
 
----
+📸 Screenshot
 
-# ✅ EINDCHECK (HEEL BELANGRIJK)
+(Homepage.png)
 
-Loop dit langs:
+🛠️ Installatie
+Vereisten
+Zorg dat het volgende geïnstalleerd is:
 
-- [ ] Register werkt  
-- [ ] Login werkt  
-- [ ] Token wordt opgeslagen  
-- [ ] Services zichtbaar  
-- [ ] Afspraak maken werkt  
-- [ ] Alleen eigen afspraken zichtbaar  
-- [ ] Annuleren werkt  
-- [ ] Frontend navigatie werkt  
-- [ ] Geen errors in console  
-- [ ] `.gitignore` correct  
+Node.js (v18 of hoger)
+MongoDB (lokaal of via MongoDB Atlas)
 
----
 
-# 📌 Waar je nu staat
+1. Repository klonen
+bashgit clone https://github.com/jouw-gebruikersnaam/barber-booking-app.git
+cd barber-booking-app
 
-Als alles hierboven werkt:
+2. Backend instellen
+bashcd backend
+npm install
+Maak een .env bestand aan in de backend/ map:
+envMONGO_URI=mongodb://localhost:27017/barber-app
+JWT_SECRET=jouw_geheime_sleutel
 
-👉 Je hebt:
-- Backend (auth + database + CRUD)
-- Frontend (React + routing)
-- Volledige functionaliteit
+Gebruik bij MongoDB Atlas de connection string die je daar vindt.
 
-➡️ Dit is een **complete fullstack app**
 
----
+3. Frontend instellen
+bashcd ../frontend
+npm install
 
-# 🎯 Laatste advies
+🚀 App starten
+Open twee terminals tegelijkertijd.
+Terminal 1 — Backend
+bashcd backend
+npm run dev
+De backend draait op: http://localhost:5000
+Terminal 2 — Frontend
+bashcd frontend
+npm run dev
+De frontend draait op: http://localhost:5173
+Open http://localhost:5173 in je browser.
 
-Push je project:
-```bash
-git add .
-git commit -m "Final version"
-git push
+📁 Projectstructuur
+barber-booking-app/
+├── backend/
+│   ├── middleware/
+│   │   └── authMiddleware.js
+│   ├── models/
+│   │   ├── Appointment.js
+│   │   └── User.js
+│   ├── routes/
+│   │   ├── appointmentRoutes.js
+│   │   └── userRoutes.js
+│   ├── .env                  ← zelf aanmaken
+│   ├── package.json
+│   └── server.js
+└── frontend/
+    ├── src/
+    │   ├── pages/
+    │   │   ├── Appointments.jsx
+    │   │   ├── Book.jsx
+    │   │   ├── Login.jsx
+    │   │   ├── Register.jsx
+    │   │   └── Services.jsx
+    │   ├── services/
+    │   │   └── api.js
+    │   ├── App.css
+    │   ├── App.jsx
+    │   └── main.jsx
+    └── package.json
+
+✅ Functionaliteiten
+
+Registreren en inloggen met JWT-authenticatie
+Afspraken boeken (datum, tijd, service)
+Eigen afspraken bekijken
+Afspraken annuleren
+Navigatie past zich aan op inlogstatus
+
+
+🔧 Gebruikte technologieën
+LaagTechnologieFrontendReact, React Router, ViteBackendNode.js, ExpressDatabaseMongoDB, MongooseAuthJWT, bcrypt
