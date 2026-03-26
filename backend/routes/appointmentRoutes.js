@@ -8,18 +8,35 @@ router.post("/", authMiddleware, async (req, res) => {
   const { datum, tijd, service } = req.body;
 
   try {
+    const selectedDate = new Date(datum);
+    const now = new Date();
+
+    // ❌ verleden blokkeren
+    if (selectedDate < now) {
+      return res.status(400).json({ msg: "Datum ligt in het verleden" });
+    }
+
+    // tijd check
+    const hour = parseInt(tijd.split(":")[0]);
+
+    if (hour < 9 || hour >= 17) {
+      return res.status(400).json({
+        msg: "Alleen afspraken tussen 09:00 en 17:00"
+      });
+    }
+
     const appointment = new Appointment({
       user_id: req.userId,
       datum,
       tijd,
-      service,
+      service
     });
 
     await appointment.save();
 
     res.status(201).json(appointment);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 

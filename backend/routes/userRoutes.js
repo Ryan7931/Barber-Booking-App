@@ -1,17 +1,25 @@
-import express from "express";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import User from "../models/User.js";
-
-const router = express.Router();
-
 router.post("/register", async (req, res) => {
   const { naam, email, password } = req.body;
 
   try {
+    // email validatie
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ msg: "Ongeldig email adres" });
+    }
+
+    // password validatie
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[\W_]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({
+        msg: "Wachtwoord moet minimaal 8 tekens, 1 hoofdletter en 1 speciaal teken bevatten"
+      });
+    }
+
+    // check bestaande email
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({ msg: "Email bestaat al" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -19,41 +27,13 @@ router.post("/register", async (req, res) => {
     const newUser = new User({
       naam,
       email,
-      password: hashedPassword,
+      password: hashedPassword
     });
 
     await newUser.save();
 
-    res.status(201).json({ message: "User registered successfully" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(201).json({ msg: "User created" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
-
-router.post("/login", async (req, res) => {
-    const { email, password } = req.body;
-
-    try {
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(400).json({ message: "User not found" });
-        }
-
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(400).json({ message: "Wrong password"})
-        }
-
-        const token = jwt.sign(
-            { userId: user._id },
-            process.env.JWT_SECRET,
-            { expiresIn: "1h"}
-        );
-
-        res.json({ token });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-export default router;
